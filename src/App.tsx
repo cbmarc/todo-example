@@ -1,24 +1,51 @@
-import React from 'react';
-import logo from './logo.svg';
 import './App.css';
 
+import { v4 as uuid } from 'node-uuid';
+import React, { useState } from 'react';
+
+import { AddInput } from './components/AddInput';
+import { TodoList } from './components/TodoList';
+import { styled } from './stitches';
+import { TodoItem } from './types';
+
+const TodoContainer = styled('div', {
+  margin: '0 auto',
+  width: '100%',
+  padding: '4vh 4vw',
+  '@lg': {
+    width: '33%',
+  },
+});
+const Title = styled('h1', {
+  fontSize: 'large',
+  textAlign: 'left',
+});
+
 function App() {
+  const [todoItems, setTodoItems] = useState<TodoItem[]>([]);
+  const addTodoItem = (text: string) => {
+    if (text.trim().length > 0) {
+      setTodoItems([
+        ...todoItems,
+        {
+          id: uuid(),
+          text: text,
+          completed: false,
+        },
+      ]);
+    }
+  };
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className='App'>
+      <TodoContainer>
+        <Title>Todo List</Title>
+        <AddInput onTodoAdded={addTodoItem} />
+        <TodoList
+          css={{ marginTop: '10px' }}
+          todoItems={todoItems}
+          setTodoItems={setTodoItems}
+        />
+      </TodoContainer>
     </div>
   );
 }
